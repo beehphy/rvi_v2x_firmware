@@ -643,7 +643,7 @@ void menu_can_status(void) {
 
 void menu_power_status(void) {
 	usb_tx_string_P(PSTR("3V3="));
-	if (ioport_get_pin_level(PWR_3V3_PIN)==true)
+	if (ioport_get_pin_level(PWR_LP3V3_PIN)==true)
 			{menu_send_1();}
 	else	{menu_send_0();}
 	usb_tx_string_P(PSTR("4V1="));

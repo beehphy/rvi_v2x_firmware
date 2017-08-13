@@ -63,8 +63,9 @@ Bool PWR_query(SHIFT_REGISTER_TYPE mask) {
  * When transitioning to 3v power only, enable 3v immediately before disabling
  * 4v.
  */
-void PWR_3_start(void) {
-	gpio_set_pin_high(PWR_3V3_PIN);
+void PWR_3_start(void) {  //going to low power state
+	gpio_set_pin_low(PWR_M3V3_PIN);   //release 4V1 regulation
+	gpio_set_pin_high(PWR_LP3V3_PIN);  //enable 12V0 regulation
 }
 
 /* 3 volt power pin manipulation
@@ -74,7 +75,8 @@ void PWR_3_start(void) {
  */
 
 void PWR_3_stop(void) {
-	gpio_set_pin_low(PWR_3V3_PIN);
+	gpio_set_pin_low(PWR_LP3V3_PIN); //release 12V0 regulation
+	gpio_set_pin_high(PWR_M3V3_PIN); //enable 4V1 regulation
 }
 
 void PWR_3_is_needed(void) {
@@ -91,15 +93,15 @@ void PWR_3_is_needed(void) {
 }
 
 void PWR_4_start(void) {
-	PWR_3_stop();
 	PWR_turn_on(1<<ENABLE_4V1);
 	PWR_push();
+	PWR_3_stop();
 }
 
 void PWR_4_stop(void) {
+	PWR_3_start();
 	PWR_turn_off((1<<ENABLE_SIM_RESET)|(1<<ENABLE_4V1));
 	PWR_push();
-	PWR_3_start();
 }
 
 void PWR_shutdown(void) {
@@ -113,6 +115,7 @@ void PWR_shutdown(void) {
 				 (1<<ENABLE_SIM_WAKE));
 	PWR_push();
 	PWR_3_stop();
+	gpio_set_pin_low(PWR_M3V3_PIN);  //diable 4V1 regulation of 3V3
 }
 
 void PWR_5_start(void) {
@@ -201,13 +204,12 @@ void PWR_mode_high(void) {
 void PWR_mode_low(void) {
 	usb_tx_string_P(PSTR("Power 3v Only\r\n"));
 	// do 3v only
-	//remove 5V loads
 	PWR_can_stop();
+	PWR_gsm_stop();
+	ACL_set_sample_off();
 	PWR_host_stop();
 	PWR_5_stop();
-	ACL_set_sample_off();
 	PWR_4_stop();
-	PWR_gsm_stop();
 	// maybe we'd like to force the leds to update here, just in case...
 	led_1_off();
 	led_2_off();

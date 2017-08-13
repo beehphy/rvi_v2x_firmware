@@ -63,7 +63,7 @@ ISR(SW0_INT_VECT_0)
 	{
 		// ask if 3v is up when the button was pressed
 
-		bool en_3v = ioport_get_pin_level(PWR_3V3_PIN);
+		bool en_3v = ioport_get_pin_level(PWR_LP3V3_PIN);
 
 		//disable 3v while button down, so 3 and 4 don't fight
 		PWR_3_stop();

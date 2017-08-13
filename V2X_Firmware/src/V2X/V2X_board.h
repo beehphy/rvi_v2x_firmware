@@ -44,12 +44,21 @@ extern "C" {
  */
 #define GPS_AUTO
 
-/** \name 3v3 power pin definition
- * Activate to maintain power to CPU
+/** \name 3v3 low-power pin definition
+ * Activate to maintain power to CPU in low power state
+ * this enables the 3V3 regulator from 12V0B
  */
-#define PWR_3V3_PIN				  IOPORT_CREATE_PIN(PORTA,4)
-#define PWR_3V3_ACTIVE			  true
-#define PWR_3V3_INACTIVE		  !PWR_3V3_ACTIVE
+#define PWR_LP3V3_PIN				IOPORT_CREATE_PIN(PORTA,4)
+#define PWR_LP3V3_ACTIVE			true
+#define PWR_LP3V3_INACTIVE			!PWR_LP3V3_ACTIVE
+
+/** \name 3v3 main power pin definition
+ * Activate to maintain power to CPU in full power state
+ * this enables the 3V3 regulator from 4V1 
+ */
+#define PWR_M3V3_PIN					IOPORT_CREATE_PIN(PORTB,0)
+#define PWR_M3V3_ACTIVE					true
+#define PWR_M3V3_INACTIVE				!PWR_M3V3_ACTIVE
 
 /** \name LED0 definitions
  *  net: SEQ_LED3 or "PWR" LED
